@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>As 5 Linguagens do Amor</title>
+    <style>
+        :root {
+            --primary: #e91e63;
+            --primary-dark: #c2185b;
+            --bg-color: #fce4ec;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tela 1: Intro */
+        #screen-intro h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Tela 2: Seleção de Sexo */
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .gender-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px 30px;
+            width: 220px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .gender-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(233, 30, 99, 0.2);
+            border-color: var(--primary);
+        }
+
+        .gender-symbol {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .gender-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        /* Tela 3: Questionário */
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 2px solid #eee;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Tela 4: Resultados */
+        .results-container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .result-score {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .btn-print {
+            margin-top: 30px;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-print:hover {
+            background-color: #000;
+        }
+
+        /* Estilos de Impressão (PDF) */
+        @media print {
+            body {
+                background-color: white;
+                display: block;
+                padding: 0;
+            }
+            .screen {
+                display: none !important;
+            }
+            #screen-results {
+                display: block !important;
+                max-width: 100%;
+                animation: none;
+            }
+            .btn-print {
+                display: none !important;
+            }
+            .results-container {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            /* Forçar impressão de cores de fundo */
+            .result-score {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TELA 1: Intro -->
+    <div id="screen-intro" class="screen active">
+        <h1>As 5 Linguagens do Amor</h1>
+        <p style="margin-top: 20px; color: #666;">Carregando...</p>
+    </div>
+
+    <!-- TELA 2: Seleção de Sexo -->
+    <div id="screen-selection" class="screen">
+        <h2 style="margin-bottom: 10px;">Selecione o Questionário</h2>
+        <p style="color: #666; margin-bottom: 20px;">Escolha a versão que melhor se aplica a você</p>
+        
+        <div class="cards-container">
+            <div class="gender-card" onclick="startQuiz('feminino')">
+                <div class="gender-symbol">♀</div>
+                <div class="gender-text">Sexo Feminino</div>
+            </div>
+            <div class="gender-card" onclick="startQuiz('masculino')">
+                <div class="gender-symbol">♂</div>
+                <div class="gender-text">Sexo Masculino</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 3: Questionário -->
+    <div id="screen-quiz" class="screen">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p style="color: #666; margin-bottom: 10px;">Pergunta <span id="current-q-num">1</span> de <span id="total-q-num">30</span></p>
+        <div class="question-text" id="question-text"></div>
+        <div class="options-container" id="options-container">
+            <!-- Opções serão inseridas aqui via JS -->
+        </div>
+    </div>
+
+    <!-- TELA 4: Resultados -->
+    <div id="screen-results" class="screen">
+        <div class="results-container">
+            <h2 style="color: var(--primary); margin-bottom: 20px;">Seu Resultado</h2>
+            <p style="margin-bottom: 20px; color: #666;">Aqui estão suas linguagens do amor em ordem decrescente:</p>
+            
+            <div id="results-list">
+                <!-- Resultados serão inseridos aqui via JS -->
+            </div>
+
+            <button class="btn-print" onclick="window.print()">
+                <span>🖨️</span> Imprimir / Salvar em PDF
+            </button>
+            <br><br>
+            <button class="btn-print" style="background-color: #666;" onclick="location.reload()">
+                <span>🔄</span> Refazer Questionário
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dados embutidos dos arquivos esp.txt e masc.txt
+        const dataFeminino = {
+            "titulo": "As 5 Linguagens do Amor - Questionário para Esposas",
+            "linguagens": { "A": "Palavras de Afirmação", "B": "Tempo de Qualidade", "C": "Presentes", "D": "Atos de Serviço", "E": "Toque Físico" },
+            "perguntas": [
+                {"id": 1, "opcoes": [{"letra": "A", "texto": "Eu adoraria receber um e-mail ou torpedo romântico de meu marido."}, {"letra": "E", "texto": "Gostaria que meu marido me abraçasse mais."}]},
+                {"id": 2, "opcoes": [{"letra": "B", "texto": "Gosto de ficar sozinha com meu marido."}, {"letra": "D", "texto": "Gostaria que meu marido fizesse alguma tarefa doméstica sem que eu precisasse pedir."}]},
+                {"id": 3, "opcoes": [{"letra": "C", "texto": "Adoraria que meu marido me trouxesse um presente do tipo 'comprei porque tive vontade'."}, {"letra": "B", "texto": "Gosto de fazer longas viagens com meu marido."}]},
+                {"id": 4, "opcoes": [{"letra": "D", "texto": "Eu me sentiria muito amada se meu marido lavasse as roupas."}, {"letra": "E", "texto": "Gosto quando meu marido me toca."}]},
+                {"id": 5, "opcoes": [{"letra": "E", "texto": "Gostaria que meu marido me abraçasse de vez em quando."}, {"letra": "C", "texto": "Gostaria que meu marido me trouxesse presentes quando viajasse."}]},
+                {"id": 6, "opcoes": [{"letra": "B", "texto": "Gostaria que meu marido compartilhasse minha paixão por irmos a lugares juntos."}, {"letra": "E", "texto": "Gosto de segurar a mão de meu marido."}]},
+                {"id": 7, "opcoes": [{"letra": "C", "texto": "Sinto-me amada quando meu marido me dá presentes."}, {"letra": "A", "texto": "Sei que meu marido me ama, mas gosto de ouvi-lo dizer isso."}]},
+                {"id": 8, "opcoes": [{"letra": "E", "texto": "Gosto que meu marido se sente perto de mim."}, {"letra": "A", "texto": "Gostaria que meu marido sempre me dissesse que estou bonita."}]},
+                {"id": 9, "opcoes": [{"letra": "B", "texto": "Passar tempo com meu marido me deixa feliz."}, {"letra": "C", "texto": "Gostaria que meu marido me desse presentes pequenos, mas significativos."}]},
+                {"id": 10, "opcoes": [{"letra": "A", "texto": "Gostaria de ouvir meu marido dizer que se orgulha de mim."}, {"letra": "D", "texto": "Gostaria que meu marido me ajudasse na limpeza sem que eu precisasse pedir."}]},
+                {"id": 11, "opcoes": [{"letra": "B", "texto": "Gosto muito de fazer coisas com meu marido, não importa o que seja."}, {"letra": "A", "texto": "Gostaria de ouvir mais palavras de apoio de meu marido."}]},
+                {"id": 12, "opcoes": [{"letra": "D", "texto": "Gostaria que meu marido fizesse coisas gentis e amáveis para mim."}, {"letra": "E", "texto": "Adoro abraçar meu marido."}]},
+                {"id": 13, "opcoes": [{"letra": "A", "texto": "Gostaria que meu marido me fizesse elogios com mais frequência."}, {"letra": "C", "texto": "Gostaria que meu marido me desse presentes mais bem escolhidos."}]},
+                {"id": 14, "opcoes": [{"letra": "B", "texto": "O simples fato de estar perto de meu marido faz que eu me sinta bem."}, {"letra": "E", "texto": "Gostaria que meu marido me fizesse uma massagem."}]},
+                {"id": 15, "opcoes": [{"letra": "A", "texto": "Gostaria que meu marido elogiasse mais as minhas realizações."}, {"letra": "D", "texto": "Gostaria que meu marido me ajudasse mais com as tarefas que não aprecio."}]},
+                {"id": 16, "opcoes": [{"letra": "E", "texto": "Nunca me canso dos beijos de meu marido."}, {"letra": "B", "texto": "Gostaria que meu marido demonstrasse mais interesse por coisas que são importantes para mim."}]},
+                {"id": 17, "opcoes": [{"letra": "D", "texto": "Sinto-me amada quando meu marido me ajuda em meus projetos."}, {"letra": "C", "texto": "Ainda fico entusiasmada quando abro um presente de meu marido."}]},
+                {"id": 18, "opcoes": [{"letra": "A", "texto": "Gostaria que meu marido me elogiasse quando eu realizo meus objetivos."}, {"letra": "B", "texto": "Gostaria que meu marido me escutasse mais e respeitasse minhas ideias."}]},
+                {"id": 19, "opcoes": [{"letra": "E", "texto": "Não consigo deixar de tocar meu marido quando ele está perto de mim."}, {"letra": "D", "texto": "Gostaria que meu marido se oferecesse para ajudar nas tarefas."}]},
+                {"id": 20, "opcoes": [{"letra": "D", "texto": "Eu ficaria muito feliz se meu marido me ajudasse com as coisas da casa."}, {"letra": "C", "texto": "Eu me sentiria amada se os presentes de meu marido demonstrassem atenção para comigo."}]},
+                {"id": 21, "opcoes": [{"letra": "B", "texto": "Gostaria que meu marido me desse atenção total quando conversamos."}, {"letra": "D", "texto": "Gostaria muito que meu marido me ajudasse a limpar a casa."}]},
+                {"id": 22, "opcoes": [{"letra": "C", "texto": "Estou ansiosa para saber o que meu marido me dará de presente no meu aniversário."}, {"letra": "A", "texto": "Quero ouvir meu marido dizer quão importante sou para ele."}]},
+                {"id": 23, "opcoes": [{"letra": "C", "texto": "Gostaria que meu marido me desse presentes com mais frequência."}, {"letra": "D", "texto": "Gostaria que meu marido me ajudasse sem que eu precisasse pedir."}]},
+                {"id": 24, "opcoes": [{"letra": "B", "texto": "Fico chateada quando meu marido me interrompe."}, {"letra": "C", "texto": "Nunca me canso de receber presentes de meu marido."}]},
+                {"id": 25, "opcoes": [{"letra": "D", "texto": "Gostaria que meu marido se oferecesse para me ajudar quando eu estiver cansada."}, {"letra": "B", "texto": "Gosto de ir a qualquer lugar com meu marido."}]},
+                {"id": 26, "opcoes": [{"letra": "E", "texto": "Gostaria que meu marido e eu nos afagássemos com mais frequência."}, {"letra": "C", "texto": "Gostaria que meu marido me surpreendesse mais frequentemente com presentes."}]},
+                {"id": 27, "opcoes": [{"letra": "A", "texto": "Os incentivos de meu marido me dão confiança."}, {"letra": "B", "texto": "Adoro assistir a filmes com meu marido."}]},
+                {"id": 28, "opcoes": [{"letra": "C", "texto": "Gostaria que meu marido me desse um presente fora de alguma ocasião especial."}, {"letra": "E", "texto": "Gostaria muito que meu marido me tocasse mais."}]},
+                {"id": 29, "opcoes": [{"letra": "D", "texto": "O fato de meu marido me ajudar é muito significativo para mim."}, {"letra": "A", "texto": "Gostaria que meu marido dissesse: 'Gosto de você'."}]},
+                {"id": 30, "opcoes": [{"letra": "E", "texto": "Adoro abraçar meu marido quando ele chega em casa."}, {"letra": "A", "texto": "Quero ouvir meu marido dizer que sente minha falta quando saio."}]}
+            ]
+        };
+
+        const dataMasculino = {
+            "titulo": "As 5 Linguagens do Amor - Questionário para Maridos",
+            "linguagens": { "A": "Palavras de Afirmação", "B": "Tempo de Qualidade", "C": "Presentes", "D": "Atos de Serviço", "E": "Toque Físico" },
+            "perguntas": [
+                {"id": 1, "opcoes": [{"letra": "A", "texto": "Gostaria que minha esposa me enviasse e-mails ou torpedos apaixonados."}, {"letra": "E", "texto": "Gostaria de receber mais abraços de minha esposa."}]},
+                {"id": 2, "opcoes": [{"letra": "B", "texto": "Gostaria de passar mais tempo sozinho com minha esposa."}, {"letra": "D", "texto": "Gosto de fazer serviços de casa com minha esposa."}]},
+                {"id": 3, "opcoes": [{"letra": "C", "texto": "Receber presentes especiais de minha esposa é algo que me deixa feliz."}, {"letra": "B", "texto": "Uma das coisas de que mais gosto é viajar com minha esposa."}]},
+                {"id": 4, "opcoes": [{"letra": "D", "texto": "Gostaria que minha esposa fizesse as compras ou abastecesse meu carro."}, {"letra": "E", "texto": "Gostaria que minha esposa me tocasse mais."}]},
+                {"id": 5, "opcoes": [{"letra": "E", "texto": "Gostaria que minha esposa me abraçasse em público."}, {"letra": "C", "texto": "De vez em quando, gostaria de receber um presente surpresa de minha esposa."}]},
+                {"id": 6, "opcoes": [{"letra": "B", "texto": "Gosto de sair com minha esposa — mesmo que seja apenas uma ida ao supermercado."}, {"letra": "E", "texto": "Gosto de andar de mãos dadas com minha esposa."}]},
+                {"id": 7, "opcoes": [{"letra": "C", "texto": "Valorizo os presentes de minha esposa."}, {"letra": "A", "texto": "Adoraria ouvir minha esposa dizer 'Amo você' com mais frequência."}]},
+                {"id": 8, "opcoes": [{"letra": "E", "texto": "Gostaria que minha esposa se sentasse perto de mim com mais frequência."}, {"letra": "A", "texto": "Sinto-me amado quando minha esposa me diz: 'Você está bonito'."}]},
+                {"id": 9, "opcoes": [{"letra": "B", "texto": "Gostaria de passar mais tempo junto de minha esposa."}, {"letra": "C", "texto": "Até mesmo o menor presente da minha esposa é importante para mim."}]},
+                {"id": 10, "opcoes": [{"letra": "A", "texto": "Adoraria ouvir minha esposa dizer: 'Tenho orgulho de você'."}, {"letra": "D", "texto": "Quando minha esposa me prepara uma bela refeição, sinto-me amado."}]},
+                {"id": 11, "opcoes": [{"letra": "B", "texto": "Gosto muito de fazer coisas com minha esposa, não importa o que seja."}, {"letra": "A", "texto": "Gostaria que minha esposa me dissesse mais palavras de apoio."}]},
+                {"id": 12, "opcoes": [{"letra": "D", "texto": "Coisas pequenas que minha esposa faz significam muito para mim."}, {"letra": "E", "texto": "Minha esposa e eu precisamos nos abraçar mais."}]},
+                {"id": 13, "opcoes": [{"letra": "A", "texto": "Gostaria de ouvir mais elogios de minha esposa."}, {"letra": "C", "texto": "Para mim, é bastante significativo receber de minha esposa presentes de que gosto muito."}]},
+                {"id": 14, "opcoes": [{"letra": "B", "texto": "Gostaria que minha esposa e eu passássemos mais tempo juntos."}, {"letra": "E", "texto": "Gostaria que minha esposa me fizesse afagos nas costas com mais frequência."}]},
+                {"id": 15, "opcoes": [{"letra": "A", "texto": "Gostaria que minha esposa ficasse mais feliz quando eu realizo alguma coisa."}, {"letra": "D", "texto": "Gostaria que minha esposa me ajudasse mais com as tarefas de casa."}]},
+                {"id": 16, "opcoes": [{"letra": "E", "texto": "Nunca me canso dos beijos de minha esposa."}, {"letra": "B", "texto": "Gostaria que minha esposa mostrasse mais interesse pelas coisas que gosto de fazer."}]},
+                {"id": 17, "opcoes": [{"letra": "D", "texto": "Gostaria que minha esposa trabalhasse comigo em algum projeto."}, {"letra": "C", "texto": "Gostaria que minha esposa se animasse mais com meus presentes."}]},
+                {"id": 18, "opcoes": [{"letra": "A", "texto": "Adoro quando minha esposa elogia minha aparência."}, {"letra": "B", "texto": "Gostaria que minha esposa não criticasse tanto minhas ideias."}]},
+                {"id": 19, "opcoes": [{"letra": "E", "texto": "Não consigo deixar de tocar minha esposa quando ela está por perto."}, {"letra": "D", "texto": "Gostaria que, de vez em quando, minha esposa me ajudasse com algumas tarefas."}]},
+                {"id": 20, "opcoes": [{"letra": "D", "texto": "Gostaria que minha esposa percebesse quando eu estivesse sobrecarregado e me ajudasse."}, {"letra": "C", "texto": "Gostaria que minha esposa pensasse mais em presentes para me dar."}]},
+                {"id": 21, "opcoes": [{"letra": "B", "texto": "Gostaria que minha esposa me desse total atenção enquanto conversamos."}, {"letra": "D", "texto": "Manter a casa limpa é um importante ato de serviço."}]},
+                {"id": 22, "opcoes": [{"letra": "C", "texto": "Estou ansioso para saber o que minha esposa vai me dar de aniversário."}, {"letra": "A", "texto": "Sei que minha esposa me ama, mas gostaria que ela dissesse isso com mais frequência."}]},
+                {"id": 23, "opcoes": [{"letra": "C", "texto": "Eu ficaria bem feliz se minha esposa me trouxesse um presente na volta de uma viagem."}, {"letra": "D", "texto": "Gostaria que minha esposa me ajudasse com alguma tarefa de casa que não aprecio."}]},
+                {"id": 24, "opcoes": [{"letra": "B", "texto": "Fico chateado quando minha esposa me interrompe."}, {"letra": "C", "texto": "Jamais me canso de receber presentes de minha esposa."}]},
+                {"id": 25, "opcoes": [{"letra": "D", "texto": "Gostaria que minha esposa me ajudasse quando eu estiver cansado."}, {"letra": "B", "texto": "Gostaria que minha esposa fosse tão animada para sair quanto eu."}]},
+                {"id": 26, "opcoes": [{"letra": "E", "texto": "Adoro fazer sexo com minha esposa."}, {"letra": "C", "texto": "Gosto quando minha esposa traz pequenas coisas de que ela sabe que vou gostar."}]},
+                {"id": 27, "opcoes": [{"letra": "A", "texto": "Gostaria que minha esposa fosse mais incentivadora."}, {"letra": "B", "texto": "Gosto de ver filmes com minha esposa."}]},
+                {"id": 28, "opcoes": [{"letra": "C", "texto": "Se eu recebesse um presente de minha esposa, eu me sentiria querido."}, {"letra": "E", "texto": "Não consigo desgrudar de minha esposa."}]},
+                {"id": 29, "opcoes": [{"letra": "D", "texto": "Adoraria que minha esposa me ajudasse com as coisas que tenho para fazer."}, {"letra": "A", "texto": "Ficaria muito feliz se, de vez em quando, minha esposa dissesse coisas como: 'Gosto de você'."}]},
+                {"id": 30, "opcoes": [{"letra": "E", "texto": "Adoro abraçar minha esposa depois de termos ficado longe por um tempo."}, {"letra": "A", "texto": "Quero ouvir minha esposa dizer que acredita em mim."}]}
+            ]
+        };
+
+        // Variáveis de Estado
+        let currentQuizData = null;
+        let currentQuestionIndex = 0;
+        let scores = { "A": 0, "B": 0, "C": 0, "D": 0, "E": 0 };
+
+        // Função para trocar de tela
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Inicialização: Tela 1 -> Tela 2 após 3 segundos
+        window.onload = function() {
+            setTimeout(() => {
+                showScreen('screen-selection');
+            }, 3000);
+        };
+
+        // Iniciar o Quiz
+        function startQuiz(gender) {
+            currentQuizData = gender === 'feminino' ? dataFeminino : dataMasculino;
+            currentQuestionIndex = 0;
+            scores = { "A": 0, "B": 0, "C": 0, "D": 0, "E": 0 };
+            
+            document.getElementById('total-q-num').textContent = currentQuizData.perguntas.length;
+            showScreen('screen-quiz');
+            renderQuestion();
+        }
+
+        // Renderizar Pergunta
+        function renderQuestion() {
+            const question = currentQuizData.perguntas[currentQuestionIndex];
+            
+            // Atualizar barra de progresso
+            const progress = ((currentQuestionIndex) / currentQuizData.perguntas.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+
+            // Atualizar texto da pergunta (usando as duas opções como a "pergunta" em si, conforme o formato do JSON)
+            document.getElementById('question-text').textContent = "Qual destas afirmações melhor descreve o que você prefere?";
+
+            // Renderizar opções
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.opcoes.forEach(opcao => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opcao.texto;
+                btn.onclick = () => handleAnswer(opcao.letra);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // Processar Resposta
+        function handleAnswer(letra) {
+            scores[letra]++;
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < currentQuizData.perguntas.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Mostrar Resultados
+        function showResults() {
+            // Converter objeto de scores em array e ordenar de forma decrescente
+            const sortedScores = Object.entries(scores)
+                .map(([letra, pontuacao]) => ({
+                    nome: currentQuizData.linguagens[letra],
+                    pontuacao: pontuacao,
+                    letra: letra
+                }))
+                .sort((a, b) => b.pontuacao - a.pontuacao);
+
+            const resultsList = document.getElementById('results-list');
+            resultsList.innerHTML = '';
+
+            sortedScores.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+                
+                // Destacar a primeira colocada
+                const isTop = index === 0 ? 'style="color: var(--primary); font-size: 1.2rem;"' : '';
+                
+                div.innerHTML = `
+                    <span class="result-name" ${isTop}>${index + 1}º. ${item.nome}</span>
+                    <span class="result-score">${item.pontuacao} pts</span>
+                `;
+                resultsList.appendChild(div);
+            });
+
+            showScreen('screen-results');
+        }
+    </script>
+</body>
+</html>
