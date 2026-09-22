@@ -54,4 +54,4 @@ Por ser um projeto puramente estático em arquivo único, não é necessário in
 ### Opção 1: Execução Direta
 1. Faça o download ou clone este repositório:
    ```bash
-   git clone [https://github.com/engsoftmax/TesteLinguagensDoAmor.git](https://github.com/engsoftmax/TesteLinguagensDoAmor.git)
+    git clone [https://github.com/engsoftmax/TesteLinguagensDoAmor.git](https://github.com/engsoftmax/TesteLinguagensDoAmor.git)
