@@ -51,8 +51,7 @@ O objetivo principal foi criar uma solução autossuficiente e rápida, eliminan
 ## 🚀 Como Executar
 
 Por ser um projeto puramente estático em arquivo único, não é necessário instalar Node.js, compilar pacotes ou rodar servidores dedicados.
-
 ### Opção 1: Execução Direta
 1. Faça o download ou clone este repositório:
    ```bash
- 
+   git clone [https://github.com/engsoftmax/TesteLinguagensDoAmor.git](https://github.com/engsoftmax/TesteLinguagensDoAmor.git)
